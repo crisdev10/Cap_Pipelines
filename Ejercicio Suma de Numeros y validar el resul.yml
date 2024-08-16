@@ -1,0 +1,39 @@
+name: Suma de Numeros y validar el resultado
+
+#EVENTO
+on:
+  push:
+    branches:
+      - test/**
+
+#JOBS
+jobs:
+  #JOB 1
+  suma:
+    name: sumar numeros
+    runs-on: ubuntu-latest #RUNNER
+    #STEP 1
+    steps:
+      - name: imprimir resultado de la Suma
+        run: | #SHELL
+          numero1=8
+          numero2=1
+          echo "numero 1: $numero1"
+          echo "numero 2: $numero2"
+          RESULTADO=$(($numero1 + $numero2))
+          echo "resultado de la suma es: $RESULTADO"
+
+          if [ $RESULTADO -gt 10 ]; then
+            echo "el resultado de la suma es mayor a 10"
+          else
+            echo "el resultado de la suma es menor o igual a 10"
+          fi
+
+  #JOB 2
+  validador:
+    name: ejecucion exitosa
+    runs-on: ubuntu-latest
+    #STEP 1
+    steps:
+      - name: verificar el workflow
+        run: echo "la ejecucion del workflow fue exitosa en gitHub actions" #SHELL
