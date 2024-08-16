@@ -1,39 +1,49 @@
+#Crear un pipeline que sume dos numeros dados por variables de entorno en Github y
+#que muestre un mensaje dependiendo de si el resultado de la suma mayor a 10 o menor/igual a 10.
+
+#La ejecucion fue exitosa en Github actions
+#El workflow tiene un nombre
+#El workflow usa el runner de ubuntu-latest
+#El workflow usa el evento push
+#El workflow tiene en el desencadenador el filtro de rama para cualquier nombre que empiece por test/
+#El workflow usa las variables de entorno del repositorio
+#El workflow usa dos jobs y un step en cada job
+#Los steps y los jobs tienen un nombre
+#El workflow es claro, entendible y efectivo
+
 name: Suma de Numeros y validar el resultado
 
 #EVENTO
 on:
   push:
     branches:
-      - test/**
+      - 'test/**'
 
 #JOBS
 jobs:
   #JOB 1
   suma:
-    name: sumar numeros
+    name: sumar dos numeros
     runs-on: ubuntu-latest #RUNNER
     #STEP 1
     steps:
-      - name: imprimir resultado de la Suma
+      - name: Configurar variables de entorno
         run: | #SHELL
-          numero1=8
-          numero2=1
-          echo "numero 1: $numero1"
-          echo "numero 2: $numero2"
-          RESULTADO=$(($numero1 + $numero2))
-          echo "resultado de la suma es: $RESULTADO"
+          echo "SUMA=$((${{ vars.NUM1 }} + ${{ vars.NUM2 }}))" >> $GITHUB_ENV
 
-          if [ $RESULTADO -gt 10 ]; then
-            echo "el resultado de la suma es mayor a 10"
-          else
-            echo "el resultado de la suma es menor o igual a 10"
-          fi
+      - name: Mostrar el resultado de la suma
+        run: echo "El resultado de la suma es ${{ env.SUMA }}"
 
   #JOB 2
-  validador:
-    name: ejecucion exitosa
+  validar_suma:
+    name: validar suma
     runs-on: ubuntu-latest
     #STEP 1
     steps:
-      - name: verificar el workflow
-        run: echo "la ejecucion del workflow fue exitosa en gitHub actions" #SHELL
+      - name: Validar si la suma es mayor a 10
+        run: |
+          if [ ${{ env.SUMA }} -gt 10 ]; then
+            echo "La suma es mayor a 10."
+          else
+            echo "La suma es menor o igual a 10."
+          fi
